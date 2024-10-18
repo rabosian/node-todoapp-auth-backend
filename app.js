@@ -11,7 +11,7 @@ app.use(bodyParser.json()); // map request to req.body
 
 app.use("/api", indexRouter); // will concatenate /api in front of router path e.g. /tasks -> /api/tasks
 
-const mongoURI = process.env.DB_URI;
+const mongoURI = process.env.DB_LOCAL;
 
 mongoose
   .connect(mongoURI)
