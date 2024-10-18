@@ -4,7 +4,7 @@ const saltRounds = 10;
 
 const userController = {};
 
-userController.createUser = async (req, res) => {
+userController.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -23,12 +23,26 @@ userController.createUser = async (req, res) => {
     const newUser = new User({ name, email, password: hashedPw });
 
     await newUser.save();
-    res.status(200).json({ status: "success" });
+    res.status(200).json({ message: "success" });
   } catch (err) {
-    res.status(400).json({ status: "failed", error: err.message });
+    res.status(400).json({ message: "failed", error: err.message });
   }
 };
 
-
+userController.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }, "-__v -createdAt -updatedAt");
+    if (user) {
+      if (bcrypt.compareSync(password, user.password)) {
+        const token = user.generateToken();
+        return res.status(200).json({ message: "success", user, token });
+      }
+    }
+    throw new Error("email and password don't match");
+  } catch (err) {
+    res.status(400).json({ message: "failed", error: err.message });
+  }
+};
 
 module.exports = userController;
