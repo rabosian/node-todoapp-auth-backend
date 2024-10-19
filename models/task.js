@@ -9,15 +9,28 @@ const taskSchema = Schema(
     },
     isComplete: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    comments: [{
+    author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment'
-    }]
+      requred: true,
+      ref: "User",
+    },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true }
 );
+
+taskSchema.methods.toJSON = function () {
+  const obj = this._doc;
+  delete obj.__v;
+  return obj;
+};
 
 const Task = mongoose.model("Task", taskSchema);
 
