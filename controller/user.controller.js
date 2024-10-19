@@ -23,9 +23,9 @@ userController.signup = async (req, res) => {
     const newUser = new User({ name, email, password: hashedPw });
 
     await newUser.save();
-    res.status(200).json({ message: "success" });
+    res.status(200).json({ status: "Success" });
   } catch (err) {
-    res.status(400).json({ message: "failed", error: err.message });
+    res.status(400).json({ status: "Failed", error: err.message });
   }
 };
 
@@ -36,12 +36,24 @@ userController.login = async (req, res) => {
     if (user) {
       if (bcrypt.compareSync(password, user.password)) {
         const token = user.generateToken();
-        return res.status(200).json({ message: "success", user, token });
+        return res.status(200).json({ status: "Success", user, token });
       }
     }
-    throw new Error("email and password don't match");
+    throw new Error("email and password not match");
   } catch (err) {
-    res.status(400).json({ message: "failed", error: err.message });
+    res.status(400).json({ status: "Failed", error: err.message });
+  }
+};
+
+userController.getUserById = async (req, res) => {
+  try {
+    const { userId } = req;
+    const user = await User.findById(userId);
+    if (!user)
+      res.status(404).json({ status: "Failed", error: "user NOT found" });
+    res.status(200).json({ status: "Success", user });
+  } catch (err) {
+    res.status(400).json({ status: "Failed", error: err.message });
   }
 };
 

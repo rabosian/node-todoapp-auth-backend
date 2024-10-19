@@ -48,7 +48,7 @@ taskController.updateTaskName = async (req, res) => {
     res.status(200).json({ status: "Success", data: updatedTask });
   } catch (err) {
     console.log(err);
-    res.status(400).json({ status: "Failed", error: err });
+    res.status(400).json({ status: "Failed", error: err.message });
   }
 };
 

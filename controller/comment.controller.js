@@ -17,8 +17,7 @@ CommentController.createComment = async (req, res) => {
     await task.save();
     res.status(200).json({ status: "Success", data: task, newComment });
   } catch (err) {
-    console.log("POST error: ", err);
-    res.status(400).json({ status: "Failed", error: err });
+    res.status(400).json({ status: "Failed", error: err.message });
   }
 };
 
