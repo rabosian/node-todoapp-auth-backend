@@ -28,9 +28,16 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-userSchema.methods.generateToken = function () {
+userSchema.methods.generateAccessToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "8h",
+  });
+  return token;
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "2d",
   });
   return token;
 };
