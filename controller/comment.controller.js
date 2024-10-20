@@ -3,19 +3,16 @@ const Comment = require("../models/comment");
 
 const CommentController = {};
 
-CommentController.createComment = async (req, res) => {
+CommentController.addCommentToTask = async (req, res) => {
   try {
-    const contents = req.body.contents;
-    const taskId = req.params.taskId;
-    // create Comment
-    const newComment = new Comment({ contents, taskId });
+    const newComment = new Comment(req.body);
     await newComment.save();
 
     // add commentId to Task
-    const task = await Task.findById(taskId);
+    const task = await Task.findById(req.params.taskId);
     task.comments.push(newComment._id);
     await task.save();
-    res.status(200).json({ status: "Success", data: task, newComment });
+    res.status(201).json({ status: "Success", data: task });
   } catch (err) {
     res.status(400).json({ status: "Failed", error: err.message });
   }
@@ -23,14 +20,11 @@ CommentController.createComment = async (req, res) => {
 
 CommentController.getAllComments = async (req, res) => {
   try {
-    const { taskId } = req.params;
-    const commentList = await Task.findById(taskId).populate('comments').select("-__v");
-    if (!commentList) {
-      throw new Error("Tasks NOT found")
-    }
+    const commentList = await Task.findById(req.params.taskId).populate("comments")
+    console.log(commentList.comments)
     res.status(200).json({ status: "Success", data: commentList });
   } catch (err) {
-    res.status(400).json({ status: "Failed", error: err.message });
+    res.status(400).json({ status: "Failed", error: err });
   }
 };
 
@@ -51,8 +45,11 @@ CommentController.updateComment = async (req, res) => {
 
 CommentController.deleteComment = async (req, res) => {
   try {
-    const removedComment = await Comment.findByIdAndDelete(req.params.id);
-    res.status(200).json({ status: "Success", data: removedComment });
+    const { taskId, commentId } = req.params
+    const removedComment = await Comment.findByIdAndDelete(commentId);
+    const task = await Task.findById(taskId)
+    task.comments.pull(commentId)
+    res.status(200).json({ status: "Success", data: task });
   } catch (err) {
     res.status(400).json({ status: "Failed", error: err });
   }

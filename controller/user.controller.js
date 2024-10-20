@@ -32,7 +32,7 @@ userController.signup = async (req, res) => {
 userController.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }, "-__v -createdAt -updatedAt");
+    const user = await User.findOne({ email });
     if (user) {
       if (bcrypt.compareSync(password, user.password)) {
         const token = user.generateToken();

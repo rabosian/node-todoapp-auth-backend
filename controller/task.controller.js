@@ -17,7 +17,7 @@ taskController.createTask = async (req, res) => {
 
 taskController.getAllTasks = async (req, res) => {
   try {
-    const taskList = await Task.find({}).populate("author");
+    const taskList = await Task.find({}).populate("author").populate("comments")
     res.status(200).json({ status: "Success", data: taskList });
   } catch (err) {
     res.status(400).json({ status: "Failed", error: err });

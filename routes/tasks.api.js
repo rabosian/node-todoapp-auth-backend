@@ -11,7 +11,8 @@ router.put('/:id/name', taskController.updateTaskName)
 router.delete('/:id', taskController.deleteTask)
 
 // comments controller
-router.post('/:taskId/comments', CommentController.createComment)
+router.post('/:taskId/comments', CommentController.addCommentToTask)
 router.get('/:taskId/comments', CommentController.getAllComments)
+router.delete('/:taskId/comments/:commentId', CommentController.deleteComment)
 
 module.exports = router;

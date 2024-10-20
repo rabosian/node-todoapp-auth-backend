@@ -8,7 +8,7 @@ authController.authenticate = async (req, res, next) => {
   try {
     const tokenString = req.headers.authorization;
     if (!tokenString) {
-      throw new Error("Invalid token");
+      throw new Error(`tokenString: ${tokenString} is invalid`);
     }
     token = tokenString.replace("Bearer ", "");
     jwt.verify(token, JWT_SECRET, (err, payload) => {
