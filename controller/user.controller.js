@@ -32,11 +32,12 @@ userController.signup = async (req, res) => {
 userController.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }, "-__v -createdAt -updatedAt");
+    const user = await User.findOne({ email }, "-createdAt -updatedAt");
     if (user) {
       if (bcrypt.compareSync(password, user.password)) {
-        const token = user.generateToken();
-        return res.status(200).json({ status: "Success", user, token });
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+        return res.status(200).json({ status: "Success", user, accessToken, refreshToken });
       }
     }
     throw new Error("email and password not match");
