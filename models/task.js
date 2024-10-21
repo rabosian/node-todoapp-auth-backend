@@ -13,7 +13,7 @@ const taskSchema = Schema(
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
-      requred: true,
+      required: true,
       ref: "User",
     },
     comments: [
